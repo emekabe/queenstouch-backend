@@ -26,6 +26,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final AppProperties appProperties;
+    private final EmailService emailService;
 
     private static final long OTP_EXPIRY_MINUTES = 15;
 
@@ -47,7 +48,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        // TODO: send OTP via email — log for demo
+        emailService.sendVerificationEmail(user.getEmail(), otp, user.getFirstName());
         log.info("=== EMAIL VERIFICATION OTP for {} : {} ===", user.getEmail(), otp);
 
         return mapToUserResponse(user);
@@ -76,6 +77,7 @@ public class AuthService {
 
         userRepository.save(user);
 
+        emailService.sendVerificationEmail(user.getEmail(), otp, user.getFirstName());
         log.info("=== ADMIN EMAIL VERIFICATION OTP for {} : {} ===", user.getEmail(), otp);
 
         return mapToUserResponse(user);
