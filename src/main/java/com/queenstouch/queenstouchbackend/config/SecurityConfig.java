@@ -32,6 +32,7 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_POST = {
             "/api/v1/auth/register",
+            "/api/v1/auth/register-admin",
             "/api/v1/auth/login",
             "/api/v1/auth/refresh",
             "/api/v1/auth/verify-email",
