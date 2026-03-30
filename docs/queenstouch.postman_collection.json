@@ -1,0 +1,475 @@
+{
+  "info": {
+    "_postman_id": "qt-backend-v1",
+    "name": "Queenstouch Global CV Builder API",
+    "description": "Full API collection for the Queenstouch backend. Set {{baseUrl}} to http://localhost:8080. The Login request auto-populates {{accessToken}} via a Tests script.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",     "value": "http://localhost:8080", "type": "string" },
+    { "key": "accessToken", "value": "",                      "type": "string" },
+    { "key": "cvId",        "value": "",                      "type": "string" },
+    { "key": "coverId",     "value": "",                      "type": "string" },
+    { "key": "linkedinId",  "value": "",                      "type": "string" },
+    { "key": "orderId",     "value": "",                      "type": "string" },
+    { "key": "premiumId",   "value": "",                      "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+44 7700 900123\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/verify-email",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"otp\": \"123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', json.data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"Password123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/refresh",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"<paste-refresh-token-here>\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/forgot-password",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/reset-password",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jane@example.com\",\n  \"otp\": \"654321\",\n  \"newPassword\": \"NewPass456!\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/users/me" }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/users/me",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Jane Updated\",\n  \"phone\": \"+44 7700 999999\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CV Builder",
+      "item": [
+        {
+          "name": "Create CV",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('cvId', json.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/cvs",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Software Engineer CV\",\n  \"cvType\": \"STANDARD\",\n  \"fullName\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+44 7700 900123\",\n  \"location\": \"London, UK\",\n  \"linkedinUrl\": \"linkedin.com/in/janedoe\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List CVs",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/cvs" }
+        },
+        {
+          "name": "Get CV",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/cvs/{{cvId}}" }
+        },
+        {
+          "name": "Patch Experience",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v1/cvs/{{cvId}}/experience",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workExperiences\": [\n    {\n      \"jobTitle\": \"Backend Developer\",\n      \"company\": \"TechCorp\",\n      \"startDate\": \"2020-01\",\n      \"current\": true,\n      \"bullets\": [\"Reduced API latency by 40%\", \"Led a team of 5 engineers\"]\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Patch Skills",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/v1/cvs/{{cvId}}/skills",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skills\": [\n    { \"name\": \"Java\", \"level\": \"EXPERT\" },\n    { \"name\": \"Spring Boot\", \"level\": \"EXPERT\" },\n    { \"name\": \"MongoDB\", \"level\": \"ADVANCED\" }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "AI – Generate Summary",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/cvs/{{cvId}}/generate-summary",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobTitle\": \"Backend Developer\",\n  \"yearsOfExperience\": \"5\",\n  \"keySkills\": \"Java, Spring Boot, MongoDB\",\n  \"achievements\": \"Delivered 3 high-traffic APIs serving 1M+ requests/day\"\n}"
+            }
+          }
+        },
+        {
+          "name": "AI – Achievement Bullet Builder",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/cvs/generate-achievement",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"Backend Developer\",\n  \"task\": \"redesigning the CI/CD pipeline\",\n  \"result\": \"deployment times reduced by 60%\"\n}"
+            }
+          }
+        },
+        {
+          "name": "AI – CV Strength Score",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/cvs/{{cvId}}/score"
+          }
+        },
+        {
+          "name": "AI – Job Match",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/cvs/{{cvId}}/job-match",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobDescription\": \"We are looking for a Senior Java Developer with 5+ years Spring Boot, REST APIs, and cloud deployment experience. AWS and MongoDB knowledge is a plus.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Download CV (PDF)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cvs/{{cvId}}/download?format=PDF",
+              "query": [{ "key": "format", "value": "PDF" }]
+            }
+          }
+        },
+        {
+          "name": "Download CV (DOCX)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cvs/{{cvId}}/download?format=DOCX",
+              "query": [{ "key": "format", "value": "DOCX" }]
+            }
+          }
+        },
+        {
+          "name": "Delete CV",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/v1/cvs/{{cvId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Cover Letter",
+      "item": [
+        {
+          "name": "Generate Cover Letter",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('coverId', json.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/cover-letters",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobTitle\": \"Senior Backend Developer\",\n  \"companyName\": \"FinTech Africa\",\n  \"keySkills\": [\"Java\", \"Spring Boot\", \"REST APIs\"],\n  \"relevantExperience\": \"5 years building scalable APIs in fintech\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Cover Letters",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/cover-letters" }
+        },
+        {
+          "name": "Get Cover Letter",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/cover-letters/{{coverId}}" }
+        },
+        {
+          "name": "Delete Cover Letter",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/v1/cover-letters/{{coverId}}" }
+        }
+      ]
+    },
+    {
+      "name": "LinkedIn",
+      "item": [
+        {
+          "name": "Generate LinkedIn Profile",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('linkedinId', json.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/linkedin/generate",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"careerSummaryInput\": \"I am an experienced product manager with 7 years in SaaS, having launched 5 products from 0 to 1 and scaled them to over 50,000 users in West Africa.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List LinkedIn Profiles",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/linkedin" }
+        },
+        {
+          "name": "Get LinkedIn Profile",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/linkedin/{{linkedinId}}" }
+        },
+        {
+          "name": "Delete LinkedIn Profile",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/api/v1/linkedin/{{linkedinId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Orders & Pricing",
+      "item": [
+        {
+          "name": "Get Pricing Catalogue (public)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/orders/pricing",
+            "auth": { "type": "noauth" }
+          }
+        },
+        {
+          "name": "Create Order (auto-PAID)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('orderId', json.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/orders",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceKeys\": [\"STANDARD_CV\"],\n  \"relatedDocumentId\": \"{{cvId}}\",\n  \"relatedDocumentType\": \"CvDocument\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Orders",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/orders" }
+        },
+        {
+          "name": "Get Order",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/orders/{{orderId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Premium Requests",
+      "item": [
+        {
+          "name": "Submit Premium Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('premiumId', json.data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/premium-requests",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceType\": \"EXPERT_REVIEW\",\n  \"notes\": \"Please review my CV for a senior fintech role. I have 5 years in backend engineering.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Premium Requests",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/premium-requests" }
+        },
+        {
+          "name": "Get Premium Request",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/premium-requests/{{premiumId}}" }
+        },
+        {
+          "name": "Upload File to Request",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/premium-requests/{{premiumId}}/upload",
+            "body": {
+              "mode": "formdata",
+              "formdata": [{ "key": "file", "type": "file", "src": "/path/to/your-cv.pdf" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Platform Stats",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/admin/stats" }
+        },
+        {
+          "name": "List All Users",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/admin/users" }
+        },
+        {
+          "name": "List All Orders",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/admin/orders" }
+        },
+        {
+          "name": "List All Premium Requests",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/admin/premium-requests" }
+        },
+        {
+          "name": "Update Premium Request Status",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/admin/premium-requests/{{premiumId}}/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"adminNotes\": \"Assigned to expert writer — ETA 2 business days.\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

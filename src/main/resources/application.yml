@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: queenstouch-backend
+
+  ai:
+    openai:
+      api-key: ${GEMINI_API_KEY:changeme}
+      base-url: https://generativelanguage.googleapis.com/v1beta/openai
+      chat:
+        options:
+          model: ${GEMINI_MODEL:gemini-2.0-flash}
+  mongodb:
+    uri: ${MONGODB_URI:mongodb://localhost:27017/queenstouch}
+
+server:
+  port: ${PORT:8080}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:veryLongSecretKeyForDevelopmentOnlyPleaseReplaceInProduction123456}
+    access-token-expiry-ms: ${JWT_ACCESS_EXPIRY_MS:900000}        # 15 min
+    refresh-token-expiry-ms: ${JWT_REFRESH_EXPIRY_MS:604800000}   # 7 days
+
+  storage:
+    upload-dir: ${UPLOAD_DIR:./uploads}
+
+  # Pricing catalogue (mocked – no real payment gateway)
+  pricing:
+    standard-cv: 5000
+    academic-cv: 6000
+    cover-letter: 2000
+    linkedin-generator: 2500
+    job-match-optimize: 3000
+    expert-review-min: 5000
+    expert-review-max: 10000
+    pro-cv-writing-min: 20000
+    pro-cv-writing-max: 40000
+    personal-statement-min: 30000
+    personal-statement-max: 50000
+    motivation-letter-min: 20000
+    motivation-letter-max: 40000
+    linkedin-optimization-min: 30000
+    linkedin-optimization-max: 40000
+    bundle-job-seeker: 7000
+    bundle-international-study: 10000
+    bundle-career-upgrade: 12000
