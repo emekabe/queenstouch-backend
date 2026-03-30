@@ -13,7 +13,6 @@ public class AppProperties {
 
     private Jwt jwt = new Jwt();
     private Storage storage = new Storage();
-    private Pricing pricing = new Pricing();
 
     @Data
     public static class Jwt {
@@ -25,27 +24,5 @@ public class AppProperties {
     @Data
     public static class Storage {
         private String uploadDir;
-    }
-
-    @Data
-    public static class Pricing {
-        private BigDecimal standardCv;
-        private BigDecimal academicCv;
-        private BigDecimal coverLetter;
-        private BigDecimal linkedinGenerator;
-        private BigDecimal jobMatchOptimize;
-        private BigDecimal expertReviewMin;
-        private BigDecimal expertReviewMax;
-        private BigDecimal proCvWritingMin;
-        private BigDecimal proCvWritingMax;
-        private BigDecimal personalStatementMin;
-        private BigDecimal personalStatementMax;
-        private BigDecimal motivationLetterMin;
-        private BigDecimal motivationLetterMax;
-        private BigDecimal linkedinOptimizationMin;
-        private BigDecimal linkedinOptimizationMax;
-        private BigDecimal bundleJobSeeker;
-        private BigDecimal bundleInternationalStudy;
-        private BigDecimal bundleCareerUpgrade;
     }
 }
