@@ -30,7 +30,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+44 7700 900123\",\n  \"password\": \"Password123!\"\n}"
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+44 7700 900123\",\n  \"password\": \"Password123!\"\n}"
             }
           }
         },
@@ -42,7 +42,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"phone\": \"+44 7700 900222\",\n  \"password\": \"AdminPass123!\",\n  \"adminSecret\": \"default_dev_admin_secret_12345\"\n}"
+              "raw": "{\n  \"firstName\": \"Admin\",\n  \"lastName\": \"User\",\n  \"email\": \"admin@example.com\",\n  \"phone\": \"+44 7700 900222\",\n  \"password\": \"AdminPass123!\",\n  \"adminSecret\": \"default_dev_admin_secret_12345\"\n}"
             }
           }
         },
@@ -136,7 +136,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Jane Updated\",\n  \"phone\": \"+44 7700 999999\"\n}"
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Updated\",\n  \"phone\": \"+44 7700 999999\"\n}"
             }
           }
         }

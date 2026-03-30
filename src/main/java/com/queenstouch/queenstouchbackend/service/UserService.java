@@ -24,8 +24,11 @@ public class UserService {
 
     public UserResponse updateProfile(String email, UpdateProfileRequest request) {
         User user = findByEmail(email);
-        if (request.getName() != null && !request.getName().isBlank()) {
-            user.setName(request.getName());
+        if (request.getFirstName() != null && !request.getFirstName().isBlank()) {
+            user.setFirstName(request.getFirstName());
+        }
+        if (request.getLastName() != null && !request.getLastName().isBlank()) {
+            user.setLastName(request.getLastName());
         }
         if (request.getPhone() != null && !request.getPhone().isBlank()) {
             user.setPhone(request.getPhone());

@@ -36,7 +36,8 @@ public class AuthService {
 
         String otp = OtpUtil.generateOtp();
         User user = User.builder()
-                .name(request.getName())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail().toLowerCase())
                 .phone(request.getPhone())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
@@ -63,7 +64,8 @@ public class AuthService {
 
         String otp = OtpUtil.generateOtp();
         User user = User.builder()
-                .name(request.getName())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .email(request.getEmail().toLowerCase())
                 .phone(request.getPhone())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
@@ -168,7 +170,8 @@ public class AuthService {
     public static UserResponse mapToUserResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
-                .name(user.getName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .role(user.getRole())

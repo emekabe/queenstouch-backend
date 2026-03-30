@@ -23,7 +23,8 @@ public class User {
     @Id
     private String id;
 
-    private String name;
+    private String firstName;
+    private String lastName;
 
     @Indexed(unique = true)
     private String email;

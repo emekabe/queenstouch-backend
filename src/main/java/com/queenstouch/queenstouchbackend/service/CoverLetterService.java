@@ -25,7 +25,7 @@ public class CoverLetterService {
 
         String content = aiService.generateCoverLetter(
                 request.getJobTitle(), request.getCompanyName(),
-                skillsStr, request.getRelevantExperience(), user.getName());
+                skillsStr, request.getRelevantExperience(), user.getFirstName() + " " + user.getLastName());
 
         CoverLetter letter = CoverLetter.builder()
                 .userId(user.getId())
