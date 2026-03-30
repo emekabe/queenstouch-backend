@@ -12,6 +12,7 @@ All responses use the standard envelope:
 | Method | Path | Auth | Description |
 |---|---|---|---|
 | POST | `/register` | Public | Register new user |
+| POST | `/register-admin` | Public | Register new admin (requires secret) |
 | POST | `/verify-email` | Public | Verify email with 6-digit OTP |
 | POST | `/resend-otp` | Public | Resend verification OTP |
 | POST | `/login` | Public | Login → access + refresh tokens |

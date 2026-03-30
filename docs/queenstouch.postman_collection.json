@@ -35,6 +35,18 @@
           }
         },
         {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/register-admin",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"phone\": \"+44 7700 900222\",\n  \"password\": \"AdminPass123!\",\n  \"adminSecret\": \"default_dev_admin_secret_12345\"\n}"
+            }
+          }
+        },
+        {
           "name": "Verify Email",
           "request": {
             "method": "POST",

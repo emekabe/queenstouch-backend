@@ -30,6 +30,15 @@ public class AuthController {
                 .body(ApiResponse.success("Registration successful. Check your email for the verification OTP.", user));
     }
 
+    @PostMapping("/register-admin")
+    @Operation(summary = "Register a new admin account (requires admin secret)")
+    public ResponseEntity<ApiResponse<UserResponse>> registerAdmin(@Valid @RequestBody AdminRegistrationRequest request) {
+        UserResponse user = authService.registerAdmin(request);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Admin registration successful. Check your email for the verification OTP.", user));
+    }
+
     @PostMapping("/verify-email")
     @Operation(summary = "Verify email using the OTP sent during registration")
     public ResponseEntity<ApiResponse<Void>> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {

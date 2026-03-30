@@ -13,7 +13,7 @@ public class AppProperties {
 
     private Jwt jwt = new Jwt();
     private Storage storage = new Storage();
-
+    private String adminSecret;
     @Data
     public static class Jwt {
         private String secret;

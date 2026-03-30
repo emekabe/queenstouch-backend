@@ -9,6 +9,8 @@ import com.queenstouch.queenstouchbackend.repository.UserRepository;
 import com.queenstouch.queenstouchbackend.security.JwtUtils;
 import com.queenstouch.queenstouchbackend.util.OtpUtil;
 import lombok.RequiredArgsConstructor;
+import com.queenstouch.queenstouchbackend.config.AppProperties;
+import com.queenstouch.queenstouchbackend.dto.request.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final AppProperties appProperties;
 
     private static final long OTP_EXPIRY_MINUTES = 15;
 
@@ -45,6 +48,33 @@ public class AuthService {
 
         // TODO: send OTP via email — log for demo
         log.info("=== EMAIL VERIFICATION OTP for {} : {} ===", user.getEmail(), otp);
+
+        return mapToUserResponse(user);
+    }
+
+    public UserResponse registerAdmin(AdminRegistrationRequest request) {
+        if (!request.getAdminSecret().equals(appProperties.getAdminSecret())) {
+            throw AppException.forbidden("Invalid admin registration secret");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw AppException.conflict("An account with this email already exists");
+        }
+
+        String otp = OtpUtil.generateOtp();
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail().toLowerCase())
+                .phone(request.getPhone())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .role(com.queenstouch.queenstouchbackend.model.enums.Role.ADMIN)
+                .emailVerificationOtp(otp)
+                .emailVerificationOtpExpiry(Instant.now().plusSeconds(OTP_EXPIRY_MINUTES * 60))
+                .build();
+
+        userRepository.save(user);
+
+        log.info("=== ADMIN EMAIL VERIFICATION OTP for {} : {} ===", user.getEmail(), otp);
 
         return mapToUserResponse(user);
     }
