@@ -9,8 +9,9 @@ spring:
       chat:
         options:
           model: ${GEMINI_MODEL:gemini-2.0-flash}
-  mongodb:
-    uri: ${MONGODB_URI:mongodb://localhost:27017/queenstouch}
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/queenstouch}
 
 server:
   port: ${PORT:8080}
