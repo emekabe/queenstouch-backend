@@ -1,9 +1,11 @@
 # Pricing Catalogue — Queenstouch Global
 
 All prices are in **Nigerian Naira (NGN)**.  
-Prices are configured in `application.yml` under the `app.pricing` namespace.
+Prices are computed dynamically and stored in a **MongoDB collection (`configs`)**. They can be fetched and updated on the fly by an Admin via the Admin Dashboard APIs.
 
-## Self-Service (AI-Powered) Features
+## Default Prices 
+If the database collection is empty, the system will automatically seed with the following fallback pricing:
+
 
 | Service Key | Label | Price |
 |---|---|---|

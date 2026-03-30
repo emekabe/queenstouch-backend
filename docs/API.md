@@ -107,3 +107,5 @@ All responses use the standard envelope:
 | GET | `/orders` | Admin | List all orders |
 | GET | `/premium-requests` | Admin | List all premium requests |
 | PUT | `/premium-requests/{id}/status` | Admin | Update request status + notes |
+| GET | `/pricing` | Admin | List all dynamic pricing configurations |
+| PUT | `/pricing/{serviceKey}` | Admin | Update a specific pricing config |

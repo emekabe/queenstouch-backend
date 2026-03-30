@@ -468,6 +468,22 @@
               "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"adminNotes\": \"Assigned to expert writer — ETA 2 business days.\"\n}"
             }
           }
+        },
+        {
+          "name": "Get All Pricing",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/v1/admin/pricing" }
+        },
+        {
+          "name": "Update Pricing",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/v1/admin/pricing/STANDARD_CV",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"minPrice\": 3500\n}"
+            }
+          }
         }
       ]
     }
