@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "CV Builder", description = "Create, manage, and AI-enhance CVs")
 @SecurityRequirement(name = "bearerAuth")
-public class DownloadController {
+public class DownloadCVController {
 
     private final DocumentGeneratorService documentGeneratorService;
 
