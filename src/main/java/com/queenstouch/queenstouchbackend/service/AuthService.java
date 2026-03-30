@@ -132,7 +132,7 @@ public class AuthService {
         user.setPasswordResetOtpExpiry(Instant.now().plusSeconds(OTP_EXPIRY_MINUTES * 60));
         userRepository.save(user);
 
-        // TODO: send OTP via email — log for demo
+        emailService.sendPasswordResetEmail(user.getEmail(), otp, user.getFirstName());
         log.info("=== PASSWORD RESET OTP for {} : {} ===", user.getEmail(), otp);
     }
 

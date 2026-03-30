@@ -41,6 +41,15 @@ public class EmailService {
         sendHtmlEmail(to, "Verify your Queenstouch account", "email/verification", ctx);
     }
 
+    @Async
+    public void sendPasswordResetEmail(String to, String token, String firstName) {
+        Context ctx = new Context();
+        ctx.setVariable("token", token);
+        ctx.setVariable("firstName", firstName);
+
+        sendHtmlEmail(to, "Reset your Queenstouch password", "email/password-reset", ctx);
+    }
+
     private void sendHtmlEmail(String to, String subject, String template, Context ctx) {
         String html = templateEngine.process(template, ctx);
 
