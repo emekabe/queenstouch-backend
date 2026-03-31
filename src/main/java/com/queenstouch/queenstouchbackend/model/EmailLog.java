@@ -28,6 +28,8 @@ public class EmailLog {
 
     private String template;
 
+    private String emailType;
+
     private String body;
 
     @Builder.Default

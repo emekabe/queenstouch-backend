@@ -5,6 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.queenstouch.queenstouchbackend.config.AppProperties;
+import com.queenstouch.queenstouchbackend.model.enums.EmailType;
 import com.queenstouch.queenstouchbackend.model.EmailLog;
 import com.queenstouch.queenstouchbackend.model.enums.EmailStatus;
 import com.queenstouch.queenstouchbackend.repository.EmailLogRepository;
@@ -36,7 +37,7 @@ public class EmailService {
         ctx.setVariable("token", token);
         ctx.setVariable("firstName", firstName);
 
-        sendHtmlEmail(to, "Verify your Queenstouch account", "email/verification", ctx);
+        sendHtmlEmail(to, EmailType.EMAIL_VERIFICATION, ctx);
     }
 
     @Async
@@ -45,18 +46,20 @@ public class EmailService {
         ctx.setVariable("token", token);
         ctx.setVariable("firstName", firstName);
 
-        sendHtmlEmail(to, "Reset your Queenstouch password", "email/password-reset", ctx);
+        sendHtmlEmail(to, EmailType.PASSWORD_RESET, ctx);
     }
 
-    private void sendHtmlEmail(String to, String subject, String template, Context ctx) {
+    private void sendHtmlEmail(String to, EmailType emailType, Context ctx) {
+        String subject = emailType.getSubject();
+        String template = emailType.getTemplate();
         String html = templateEngine.process(template, ctx);
 
-        EmailLog emailLog = createEmailLog(to, subject, template, html);
+        EmailLog emailLog = createEmailLog(to, subject, template, emailType, html);
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom(appProperties.getMailFromAddress());
+            helper.setFrom(appProperties.getMailFromAddress(), appProperties.getMailPersonal());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(html, true);
@@ -76,13 +79,14 @@ public class EmailService {
         }
     }
 
-    private EmailLog createEmailLog(String to, String subject, String template, String html) {
+    private EmailLog createEmailLog(String to, String subject, String template, EmailType emailType, String html) {
         return emailLogRepository.save(
                 EmailLog.builder()
                         .fromAddress(appProperties.getMailFromAddress())
                         .toAddress(to)
                         .subject(subject)
                         .template(template)
+                        .emailType(emailType.name())
                         .body(html)
                         .status(EmailStatus.PENDING)
                         .createdAt(Instant.now())

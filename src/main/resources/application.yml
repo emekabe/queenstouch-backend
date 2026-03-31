@@ -38,6 +38,7 @@ app:
   admin-secret: ${ADMIN_REGISTER_SECRET:default_dev_admin_secret_12345}
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
   mail-from-address: ${SMTP_USERNAME:}
+  mail-personal: ${MAIL_PERSONAL:Queenstouch}
   jwt:
     secret: ${JWT_SECRET:veryLongSecretKeyForDevelopmentOnlyPleaseReplaceInProduction123456}
     access-token-expiry-ms: ${JWT_ACCESS_EXPIRY_MS:900000}        # 15 min

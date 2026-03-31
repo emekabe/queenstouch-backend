@@ -16,6 +16,7 @@ public class AppProperties {
     private String adminSecret;
     private String frontendUrl;
     private String mailFromAddress;
+    private String mailPersonal;
     @Data
     public static class Jwt {
         private String secret;
