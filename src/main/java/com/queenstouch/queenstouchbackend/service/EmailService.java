@@ -22,8 +22,6 @@ import java.time.Instant;
 @Slf4j
 public class EmailService {
 
-    private static final String FROM_ADDRESS = "noreply@queenstouch.com"; // Default from
-
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
     private final AppProperties appProperties;
@@ -58,7 +56,7 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom(FROM_ADDRESS);
+            helper.setFrom(appProperties.getMailFromAddress());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(html, true);
@@ -81,7 +79,7 @@ public class EmailService {
     private EmailLog createEmailLog(String to, String subject, String template, String html) {
         return emailLogRepository.save(
                 EmailLog.builder()
-                        .fromAddress(FROM_ADDRESS)
+                        .fromAddress(appProperties.getMailFromAddress())
                         .toAddress(to)
                         .subject(subject)
                         .template(template)

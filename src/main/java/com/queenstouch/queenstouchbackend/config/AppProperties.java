@@ -15,6 +15,7 @@ public class AppProperties {
     private Storage storage = new Storage();
     private String adminSecret;
     private String frontendUrl;
+    private String mailFromAddress;
     @Data
     public static class Jwt {
         private String secret;
