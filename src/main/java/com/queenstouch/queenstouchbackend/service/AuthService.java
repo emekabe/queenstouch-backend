@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -31,8 +32,16 @@ public class AuthService {
     private static final long OTP_EXPIRY_MINUTES = 15;
 
     public UserResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw AppException.conflict("An account with this email already exists");
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail().toLowerCase());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (userOptional.get().isEmailVerified())
+                throw AppException.conflict("An account with this email already exists and is verified");
+            else {
+                String otp = generateAndSendEmailVerificationOtp(user);
+                log.info("=== EMAIL VERIFICATION OTP for {} : {} ===", user.getEmail(), otp);
+                return mapToUserResponse(user);
+            }
         }
 
         String otp = OtpUtil.generateOtp();
@@ -54,13 +63,32 @@ public class AuthService {
         return mapToUserResponse(user);
     }
 
+    private String generateAndSendEmailVerificationOtp(User user) {
+        String otp = OtpUtil.generateOtp();
+        user.setEmailVerificationOtp(otp);
+        user.setEmailVerificationOtpExpiry(Instant.now().plusSeconds(OTP_EXPIRY_MINUTES * 60));
+        user.setUpdatedAt(Instant.now());
+        userRepository.save(user);
+        emailService.sendVerificationEmail(user.getEmail(), otp, user.getFirstName());
+        return otp;
+    }
+
     public UserResponse registerAdmin(AdminRegistrationRequest request) {
         if (!request.getAdminSecret().equals(appProperties.getAdminSecret())) {
             throw AppException.forbidden("Invalid admin registration secret");
         }
 
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw AppException.conflict("An account with this email already exists");
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail().toLowerCase());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.isEmailVerified()) {
+                throw AppException.conflict("An account with this email already exists and is verified");
+            }
+            else {
+                String otp = generateAndSendEmailVerificationOtp(user);
+                log.info("=== ADMIN EMAIL VERIFICATION OTP for {} : {} ===", user.getEmail(), otp);
+                return mapToUserResponse(user);
+            }
         }
 
         String otp = OtpUtil.generateOtp();
