@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class PremiumRequestService {
         String url = saveFile(file);
         if (req.getUploadedFileUrls() == null) req.setUploadedFileUrls(new ArrayList<>());
         req.getUploadedFileUrls().add(url);
+        req.setUpdatedAt(Instant.now());
         return requestRepository.save(req);
     }
 
@@ -60,6 +62,7 @@ public class PremiumRequestService {
                 .orElseThrow(() -> AppException.notFound("Premium request not found"));
         req.setStatus(status);
         if (adminNotes != null) req.setAdminNotes(adminNotes);
+        req.setUpdatedAt(Instant.now());
         return requestRepository.save(req);
     }
 

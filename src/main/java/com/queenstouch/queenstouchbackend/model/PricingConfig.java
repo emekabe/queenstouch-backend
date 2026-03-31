@@ -25,6 +25,7 @@ public class PricingConfig {
     private BigDecimal minPrice;
     private BigDecimal maxPrice;
 
+    @Builder.Default
     @LastModifiedDate
-    private Instant updatedAt;
+    private Instant updatedAt = Instant.now();
 }

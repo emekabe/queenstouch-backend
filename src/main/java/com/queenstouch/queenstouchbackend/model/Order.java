@@ -40,8 +40,9 @@ public class Order {
     private String relatedDocumentId;
     private String relatedDocumentType;   // e.g. "CV", "COVER_LETTER", "LINKEDIN"
 
+    @Builder.Default
     @CreatedDate
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
     private Instant paidAt;
 

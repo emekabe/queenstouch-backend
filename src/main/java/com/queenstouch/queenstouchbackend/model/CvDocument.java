@@ -93,11 +93,13 @@ public class CvDocument {
     private CvScore cvScore;
     private JobMatchResult lastJobMatchResult;
 
+    @Builder.Default
     @CreatedDate
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
+    @Builder.Default
     @LastModifiedDate
-    private Instant updatedAt;
+    private Instant updatedAt = Instant.now();
 
     // ── Embedded Documents ───────────────────────────────────────────────────
 

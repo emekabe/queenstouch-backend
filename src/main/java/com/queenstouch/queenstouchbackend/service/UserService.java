@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -33,6 +35,7 @@ public class UserService {
         if (request.getPhone() != null && !request.getPhone().isBlank()) {
             user.setPhone(request.getPhone());
         }
+        user.setUpdatedAt(Instant.now());
         userRepository.save(user);
         return AuthService.mapToUserResponse(user);
     }
@@ -43,6 +46,7 @@ public class UserService {
             throw AppException.badRequest("Current password is incorrect");
         }
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        user.setUpdatedAt(Instant.now());
         userRepository.save(user);
     }
 

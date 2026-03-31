@@ -31,9 +31,11 @@ public class LinkedInProfile {
     private String summary;
     private List<String> skills;
 
+    @Builder.Default
     @CreatedDate
-    private Instant createdAt;
+    private Instant createdAt = Instant.now();
 
+    @Builder.Default
     @LastModifiedDate
-    private Instant updatedAt;
+    private Instant updatedAt = Instant.now();
 }

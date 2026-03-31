@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,6 +57,7 @@ public class CvService {
         CvDocument cv = getForUser(userEmail, cvId);
         applyPatch(cv, req);
         autoSetStatus(cv);
+        cv.setUpdatedAt(Instant.now());
         return cvRepository.save(cv);
     }
 
@@ -76,6 +78,7 @@ public class CvService {
                 request.getAchievements()
         );
         cv.setSummary(summary);
+        cv.setUpdatedAt(Instant.now());
         cvRepository.save(cv);
         return summary;
     }
@@ -90,6 +93,7 @@ public class CvService {
         String json = aiService.scoreCv(cvText);
         CvScore score = parseJson(json, CvScore.class);
         cv.setCvScore(score);
+        cv.setUpdatedAt(Instant.now());
         cvRepository.save(cv);
         return score;
     }
@@ -103,6 +107,7 @@ public class CvService {
         // Persist result + hash of JD
         result.setJdSnippetHash(String.valueOf(request.getJobDescription().hashCode()));
         cv.setLastJobMatchResult(result);
+        cv.setUpdatedAt(Instant.now());
         cvRepository.save(cv);
         return result;
     }

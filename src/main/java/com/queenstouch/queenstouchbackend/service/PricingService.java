@@ -66,6 +66,7 @@ public class PricingService {
         PricingConfig updated = current.toBuilder()
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
+                .updatedAt(Instant.now())
                 .build();
         
         log.info("Admin updated pricing for [{}]: min={}, max={}", serviceKey, minPrice, maxPrice);

@@ -99,6 +99,7 @@ public class AuthService {
         user.setEmailVerified(true);
         user.setEmailVerificationOtp(null);
         user.setEmailVerificationOtpExpiry(null);
+        user.setUpdatedAt(Instant.now());
         userRepository.save(user);
     }
 
@@ -130,6 +131,7 @@ public class AuthService {
         String otp = OtpUtil.generateOtp();
         user.setPasswordResetOtp(otp);
         user.setPasswordResetOtpExpiry(Instant.now().plusSeconds(OTP_EXPIRY_MINUTES * 60));
+        user.setUpdatedAt(Instant.now());
         userRepository.save(user);
 
         emailService.sendPasswordResetEmail(user.getEmail(), otp, user.getFirstName());
@@ -149,6 +151,7 @@ public class AuthService {
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
         user.setPasswordResetOtp(null);
         user.setPasswordResetOtpExpiry(null);
+        user.setUpdatedAt(Instant.now());
         userRepository.save(user);
     }
 
