@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +21,7 @@ public class PremiumRequestService {
 
     private final PremiumServiceRequestRepository requestRepository;
     private final UserService userService;
-    private final com.queenstouch.queenstouchbackend.config.AppProperties appProperties;
+    private final GoogleCloudStorageService googleCloudStorageService;
 
     public PremiumServiceRequest create(String userEmail, CreatePremiumRequestDto dto) {
         var user = userService.findByEmail(userEmail);
@@ -38,7 +35,7 @@ public class PremiumRequestService {
 
     public PremiumServiceRequest addUploadedFile(String userEmail, String requestId, MultipartFile file) {
         PremiumServiceRequest req = getForUser(userEmail, requestId);
-        String url = saveFile(file);
+        String url = googleCloudStorageService.uploadFile(file);
         if (req.getUploadedFileUrls() == null) req.setUploadedFileUrls(new ArrayList<>());
         req.getUploadedFileUrls().add(url);
         req.setUpdatedAt(Instant.now());
@@ -68,21 +65,5 @@ public class PremiumRequestService {
 
     public List<PremiumServiceRequest> listAll() {
         return requestRepository.findAll();
-    }
-
-    // ── File Storage ──────────────────────────────────────────────────────────
-
-    private String saveFile(MultipartFile file) {
-        try {
-            String uploadDir = appProperties.getStorage().getUploadDir();
-            Path dir = Paths.get(uploadDir);
-            Files.createDirectories(dir);
-            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path dest = dir.resolve(filename);
-            Files.copy(file.getInputStream(), dest);
-            return "/uploads/" + filename;
-        } catch (IOException e) {
-            throw AppException.internalError("Failed to store file: " + e.getMessage());
-        }
     }
 }

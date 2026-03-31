@@ -13,6 +13,7 @@ public class AppProperties {
 
     private Jwt jwt = new Jwt();
     private Storage storage = new Storage();
+    private GoogleCloudStorage googleCloudStorage = new GoogleCloudStorage();
     private String adminSecret;
     private String frontendUrl;
     private String mailFromAddress;
@@ -27,5 +28,12 @@ public class AppProperties {
     @Data
     public static class Storage {
         private String uploadDir;
+    }
+
+    @Data
+    public static class GoogleCloudStorage {
+        private String projectId;
+        private String bucket;
+        private String credentialsBase64;
     }
 }
