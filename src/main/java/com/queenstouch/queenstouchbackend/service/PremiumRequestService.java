@@ -66,4 +66,19 @@ public class PremiumRequestService {
     public List<PremiumServiceRequest> listAll() {
         return requestRepository.findAll();
     }
+
+    /** Admin: Upload final CV back to user */
+    public PremiumServiceRequest adminDeliverFile(String id, MultipartFile file, String adminNotes) {
+        PremiumServiceRequest req = requestRepository.findById(id)
+                .orElseThrow(() -> AppException.notFound("Premium request not found"));
+        String url = googleCloudStorageService.uploadFile(file);
+        if (req.getUploadedFileUrls() == null) req.setUploadedFileUrls(new ArrayList<>());
+        req.getUploadedFileUrls().add(url);
+        req.setStatus(RequestStatus.COMPLETED);
+        if (adminNotes != null && !adminNotes.isBlank()) {
+            req.setAdminNotes(adminNotes);
+        }
+        req.setUpdatedAt(Instant.now());
+        return requestRepository.save(req);
+    }
 }

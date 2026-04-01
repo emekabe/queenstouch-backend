@@ -19,6 +19,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.time.Instant;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -50,6 +56,34 @@ public class AdminController {
         )));
     }
 
+    @GetMapping("/recent-activity")
+    @Operation(summary = "Get recent activity list")
+    public ResponseEntity<ApiResponse<List<Map<String, String>>>> getRecentActivity() {
+        List<Map<String, String>> activities = new ArrayList<>();
+        
+        orderRepository.findAll().stream()
+            .sorted(Comparator.comparing(Order::getCreatedAt).reversed())
+            .limit(5)
+            .forEach(o -> activities.add(Map.of(
+                "title", "New Order",
+                "desc", "User " + o.getUserId() + " placed an order" + (o.getItems() != null && !o.getItems().isEmpty() ? " for " + o.getItems().getFirst().getLabel() : ""),
+                "time", o.getCreatedAt().toString()
+            )));
+            
+        userRepository.findAll().stream()
+            .sorted(Comparator.comparing(User::getCreatedAt).reversed())
+            .limit(5)
+            .forEach(u -> activities.add(Map.of(
+                "title", "New User Registration",
+                "desc", u.getFirstName() + " created an account",
+                "time", u.getCreatedAt().toString()
+            )));
+            
+        activities.sort((a, b) -> Instant.parse(b.get("time")).compareTo(Instant.parse(a.get("time"))));
+        
+        return ResponseEntity.ok(ApiResponse.success(activities.stream().limit(5).toList()));
+    }
+
     // ── Orders ────────────────────────────────────────────────────────────────
 
     @GetMapping("/orders")
@@ -79,5 +113,15 @@ public class AdminController {
     public static class StatusUpdateDto {
         private RequestStatus status;
         private String adminNotes;
+    }
+
+    @PostMapping(value = "/premium-requests/{id}/deliver", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload final CV file and mark request as COMPLETED")
+    public ResponseEntity<ApiResponse<PremiumServiceRequest>> deliverPremiumRequest(
+            @PathVariable String id,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "notes", required = false) String notes) {
+        PremiumServiceRequest updated = premiumRequestService.adminDeliverFile(id, file, notes);
+        return ResponseEntity.ok(ApiResponse.success("File delivered and status updated to COMPLETED", updated));
     }
 }
