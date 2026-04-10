@@ -1,100 +1,114 @@
-# Queenstouch Global CV Builder — Backend
+# Queenstouch Global Career Platform — Backend API
 
-A production-ready Spring Boot 3 REST API powering the Queenstouch CV & Career Tools platform.
+🚀 **A Production-Ready Spring Boot REST API for AI-Powered Career Services.**
 
-## Tech Stack
+This backend provides the engine for CV building, cover letter generation, and LinkedIn optimization, integrated with Google Gemini AI and Google Cloud Storage.
+
+---
+
+## 🛠 Tech Stack
 
 | Layer | Technology |
 |---|---|
-| Language | Java 21 |
-| Framework | Spring Boot 3.x |
-| Database | MongoDB (Spring Data MongoDB) |
-| AI | Spring AI → Google Gemini |
-| Auth | JWT (access + refresh tokens) |
-| Docs | springdoc-openapi (Swagger UI) |
-| Build | Gradle |
+| **Language** | Java 21 (LTS) |
+| **Framework** | Spring Boot 3.4.5 |
+| **Build & Dependency** | Gradle (Kotlin DSL compatible) |
+| **Database** | MongoDB (Spring Data MongoDB) |
+| **AI Integration** | Spring AI (Prompt Engineering + Gemini 2.0 Flash) |
+| **Security** | Spring Security + JWT (Stateless) |
+| **Storage** | Google Cloud Storage (Bucket integration) |
+| **Documents** | iText 7 (PDF) & Apache POI (Word/DOCX) |
+| **API Docs** | Springdoc OpenAPI (Swagger UI) |
 
 ---
 
-## Quick Start
+## ✨ Key AI Features
+
+The backend implements advanced AI workflows using **Spring AI → Google Gemini**:
+
+- **Achievement Rewriting**: Uses context-aware prompts to rewrite basic tasks into high-impact bullet points.
+- **CV Scoring Engine**: Analyzes CV data against industry standards to provide an impact score (0-100).
+- **Job Match Analysis**: Dynamically compares a user's CV against a job description to identify keyword gaps and match percentage.
+- **Cover Letter Generation**: Synthesizes CV data and job requirements into a professional, tailored cover letter.
+- **Fail-safe Mocking**: Provides a `MockAiService` that activates automatically if no API key is set, ensuring seamless local development.
+
+---
+
+## 🚀 Quick Start
 
 ### 1. Prerequisites
+- **JDK 21** installed.
+- **MongoDB** (local or remote).
+- **Gradle** 8 (wrapper included).
 
-- Java 21+
-- MongoDB running locally on `mongodb://localhost:27017` (or set `MONGODB_URI`)
-- Google Gemini API key (optional — a mock AI service is provided)
-
-### 2. Environment Variables
-
-Copy `.env.example` to `.env` (or export in shell):
+### 2. Configuration
+Copy `.env.example` to `.env` and fill in your credentials:
 
 ```bash
+# Core
 MONGODB_URI=mongodb://localhost:27017/queenstouch
-JWT_SECRET=your-256-bit-secret-here
-GEMINI_API_KEY=your-google-ai-studio-key
-MAIL_HOST=smtp.example.com
-MAIL_PORT=587
-MAIL_USERNAME=noreply@queenstouch.com
-MAIL_PASSWORD=yourpassword
+JWT_SECRET=your_super_secret_key_here
+
+# AI (Google Gemini)
+GEMINI_API_KEY=your_google_ai_studio_key
+GEMINI_MODEL=gemini-2.0-flash
+
+# Storage
+GOOGLE_CLOUD_STORAGE_PROJECT_ID=your_gcp_project
+GOOGLE_CLOUD_STORAGE_BUCKET=your_bucket_name
+GOOGLE_CLOUD_STORAGE_CREDENTIALS_BASE64=base64_json_key
 ```
 
-### 3. Run
-
+### 3. Running the App
 ```bash
 ./gradlew bootRun
 ```
-
-API available at: `http://localhost:8080`  
-Swagger UI at: `http://localhost:8080/swagger-ui.html`
+The API will be available at `http://localhost:8080`.
 
 ---
 
-## Project Structure
+## 📂 Project Architecture
 
-```
+```bash
 src/main/java/com/queenstouch/queenstouchbackend/
-├── config/           # Spring config (Security, OpenAPI, AppProperties)
-├── controller/       # REST controllers
-├── dto/              # Request / Response DTOs
-├── exception/        # GlobalExceptionHandler + AppException
-├── model/            # MongoDB document models + enums
-├── repository/       # Spring Data MongoDB repositories
-├── service/          # Business logic services
-│   └── ai/          # AiService interface + GeminiAiService + MockAiService
-└── util/             # OtpUtil, JwtUtil
+├── config/           # Security, AI, GCS, and Web configurations
+├── controller/       # REST endpoints (v1)
+├── dto/              # Request/Response data transfer objects
+├── exception/        # Global error handling logic
+├── model/            # MongoDB entities (User, CvDocument, Order)
+├── repository/       # Data access layer
+├── service/          # Business logic & AI orchestration
+│   └── ai/           # Gemini & Mock AI implementations
+└── util/             # JWT, OTP, and Document Export utilities
 ```
 
 ---
 
-## API Overview
+## 📜 API Documentation
 
-See `docs/API.md` for the full endpoint listing or browse **Swagger UI** at runtime.
+We use **OpenAPI 3** for documentation. Once the app is running, visit:
 
-| Tag | Base Path | Description |
-|---|---|---|
-| Auth | `/api/v1/auth` | Register, verify email, login, refresh, reset password |
-| User | `/api/v1/users` | Profile read & update |
-| CV Builder | `/api/v1/cvs` | Full CV lifecycle + AI features |
-| Cover Letter | `/api/v1/cover-letters` | AI cover letter generation |
-| LinkedIn | `/api/v1/linkedin` | AI LinkedIn profile generation |
-| Orders & Pricing | `/api/v1/orders` | Mocked payment & pricing catalogue |
-| Premium Requests | `/api/v1/premium-requests` | Human-expert service requests |
-| Admin | `/api/v1/admin` | Platform stats, user/order management |
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **JSON Spec**: `http://localhost:8080/v3/api-docs`
 
 ---
 
-## AI Feature Notes
-
-All AI features call **Spring AI → Google Gemini Flash** by default.  
-If `GEMINI_API_KEY` is not set, the `MockAiService` bean provides realistic stub responses automatically — no config needed for local dev.
-
-See `docs/AI_INTEGRATION.md` for details.
+## 📧 Email Notifications
+The system includes a pre-configured `MailService` using Thymeleaf templates for:
+- Email Verification (OTP).
+- Password Reset.
+- Order Confirmations.
 
 ---
 
-## Pricing
+## 🧪 Testing
 
-All prices are in **Nigerian Naira (NGN)** and are configured in `application.yml`.
-The pricing catalogue is publicly exposed at `GET /api/v1/orders/pricing`.
+Run the test suite including security and integration tests:
+```bash
+./gradlew test
+```
 
-See `docs/PRICING.md` for the full catalogue.
+---
+
+## 📝 License
+Proprietary — Queenstouch Global. All rights reserved.
