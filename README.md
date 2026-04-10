@@ -111,4 +111,4 @@ Run the test suite including security and integration tests:
 ---
 
 ## 📝 License
-Proprietary — Queenstouch Global. All rights reserved.
+This project is open-source and free for anyone to contribute to. We welcome community contributions to help improve the platform for job seekers everywhere!
