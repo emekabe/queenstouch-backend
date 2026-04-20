@@ -7,24 +7,6 @@ spring:
       max-file-size: ${MAX_FILE_SIZE:5MB}
       max-request-size: ${MAX_REQUEST_SIZE:5MB}
 
-  mail:
-    host: ${SMTP_HOST:smtp.mailtrap.io}
-    port: ${SMTP_PORT:587}
-    username: ${SMTP_USERNAME:}
-    password: ${SMTP_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
-          ssl:
-            enable: false
-
   ai:
     openai:
       api-key: ${GEMINI_API_KEY:changeme}
@@ -32,6 +14,7 @@ spring:
       chat:
         options:
           model: ${GEMINI_MODEL:gemini-2.5-flash}
+
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/queenstouch}
@@ -47,9 +30,11 @@ springdoc:
 
 app:
   admin-secret: ${ADMIN_REGISTER_SECRET:default_dev_admin_secret_12345}
-  frontend-url: ${FRONTEND_URL:http://localhost:3000}
-  mail-from-address: ${SMTP_USERNAME:}
-  mail-personal: ${MAIL_PERSONAL:Queenstouch}
+  frontend-url: ${FRONTEND_URL:http://localhost:4200}
+  resend:
+    api-key: ${RESEND_API_KEY:}
+    from-address: ${RESEND_FROM_ADDRESS:onboarding@resend.dev}
+    from-name: ${RESEND_FROM_NAME:Queenstouch}
   jwt:
     secret: ${JWT_SECRET:veryLongSecretKeyForDevelopmentOnlyPleaseReplaceInProduction123456}
     access-token-expiry-ms: ${JWT_ACCESS_EXPIRY_MS:900000}        # 15 min

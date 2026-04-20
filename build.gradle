@@ -44,9 +44,11 @@ dependencies {
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // Mail & Thymeleaf
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // Thymeleaf (still used for HTML template rendering)
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // Resend (transactional email via HTTPS API)
+    implementation 'com.resend:resend-java:3.1.0'
     // JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'

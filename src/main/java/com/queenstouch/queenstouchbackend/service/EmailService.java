@@ -1,16 +1,15 @@
 package com.queenstouch.queenstouchbackend.service;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.CreateEmailOptions;
+import com.resend.services.emails.model.CreateEmailResponse;
 import lombok.extern.slf4j.Slf4j;
 import com.queenstouch.queenstouchbackend.config.AppProperties;
 import com.queenstouch.queenstouchbackend.model.enums.EmailType;
 import com.queenstouch.queenstouchbackend.model.EmailLog;
 import com.queenstouch.queenstouchbackend.model.enums.EmailStatus;
 import com.queenstouch.queenstouchbackend.repository.EmailLogRepository;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -19,19 +18,28 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import java.time.Instant;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class EmailService {
 
-    private final JavaMailSender mailSender;
+    private final Resend resendClient;
     private final SpringTemplateEngine templateEngine;
     private final AppProperties appProperties;
     private final EmailLogRepository emailLogRepository;
 
+    public EmailService(AppProperties appProperties,
+                        SpringTemplateEngine templateEngine,
+                        EmailLogRepository emailLogRepository) {
+        this.appProperties = appProperties;
+        this.templateEngine = templateEngine;
+        this.emailLogRepository = emailLogRepository;
+        this.resendClient = new Resend(appProperties.getResend().getApiKey());
+    }
+
     @Async
     public void sendVerificationEmail(String to, String token, String firstName) {
         String verificationUrl = appProperties.getFrontendUrl()
-                + "/verify-email?token=" + token + "&email=" + to;
+                + "/auth/verify?email=" + to + "&otp=" + token;
+
         Context ctx = new Context();
         ctx.setVariable("verificationUrl", verificationUrl);
         ctx.setVariable("token", token);
@@ -54,35 +62,37 @@ public class EmailService {
         String template = emailType.getTemplate();
         String html = templateEngine.process(template, ctx);
 
+        AppProperties.Resend resendCfg = appProperties.getResend();
+        String from = resendCfg.getFromName() + " <" + resendCfg.getFromAddress() + ">";
+
         EmailLog emailLog = createEmailLog(to, subject, template, emailType, html);
 
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom(appProperties.getMailFromAddress(), appProperties.getMailPersonal());
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(html, true);
-            mailSender.send(message);
+            CreateEmailOptions options = CreateEmailOptions.builder()
+                    .from(from)
+                    .to(to)
+                    .subject(subject)
+                    .html(html)
+                    .build();
+
+            CreateEmailResponse response = resendClient.emails().send(options);
 
             markEmailLogSuccessful(emailLog);
-            log.debug("Email '{}' sent to {} [logId={}]", subject, to, emailLog.getId());
+            log.info("Email '{}' sent to {} via Resend [id={}]", subject, to, response.getId());
 
-        } catch (MessagingException e) {
+        } catch (ResendException e) {
             markEmailLogFailed(e, emailLog);
-            log.error("Failed to send email '{}' to {} [logId={}]: {}",
-                    subject, to, emailLog.getId(), e.getMessage());
+            log.error("Resend failed for '{}' to {} [logId={}]: {}", subject, to, emailLog.getId(), e.getMessage());
         } catch (Exception e) {
-             markEmailLogFailed(e, emailLog);
-             log.error("Failed to process email '{}' to {} [logId={}]: {}",
-                    subject, to, emailLog.getId(), e.getMessage());
+            markEmailLogFailed(e, emailLog);
+            log.error("Unexpected error sending '{}' to {} [logId={}]: {}", subject, to, emailLog.getId(), e.getMessage());
         }
     }
 
     private EmailLog createEmailLog(String to, String subject, String template, EmailType emailType, String html) {
         return emailLogRepository.save(
                 EmailLog.builder()
-                        .fromAddress(appProperties.getMailFromAddress())
+                        .fromAddress(appProperties.getResend().getFromAddress())
                         .toAddress(to)
                         .subject(subject)
                         .template(template)

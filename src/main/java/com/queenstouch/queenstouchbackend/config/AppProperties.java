@@ -16,8 +16,14 @@ public class AppProperties {
     private GoogleCloudStorage googleCloudStorage = new GoogleCloudStorage();
     private String adminSecret;
     private String frontendUrl;
-    private String mailFromAddress;
-    private String mailPersonal;
+    private Resend resend = new Resend();
+
+    @Data
+    public static class Resend {
+        private String apiKey;
+        private String fromAddress;
+        private String fromName = "Queenstouch";
+    }
     @Data
     public static class Jwt {
         private String secret;
