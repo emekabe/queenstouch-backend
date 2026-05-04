@@ -35,10 +35,16 @@ public class CvService {
         var user = userService.findByEmail(userEmail);
         CvDocument cv = CvDocument.builder()
                 .userId(user.getId())
-                .title(request.getTitle() != null ? request.getTitle() : "My CV")
                 .cvType(request.getCvType() != null ? request.getCvType() : CvType.STANDARD)
-                .scholarshipMode(request.isScholarshipMode())
                 .build();
+
+        applyPatch(cv, request);
+
+        if (cv.getTitle() == null) {
+            cv.setTitle("My CV");
+        }
+
+        autoSetStatus(cv);
         return cvRepository.save(cv);
     }
 

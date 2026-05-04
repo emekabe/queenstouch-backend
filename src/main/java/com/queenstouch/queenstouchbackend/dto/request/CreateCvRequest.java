@@ -2,10 +2,10 @@ package com.queenstouch.queenstouchbackend.dto.request;
 
 import com.queenstouch.queenstouchbackend.model.enums.CvType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class CreateCvRequest {
-    private String title;
+@EqualsAndHashCode(callSuper = true)
+public class CreateCvRequest extends UpdateCvRequest {
     private CvType cvType;
-    private boolean scholarshipMode;
 }
