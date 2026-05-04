@@ -164,7 +164,7 @@ public class CvService {
 
     private void autoSetStatus(CvDocument cv) {
         // Mark complete when key sections are filled
-        if (cv.getFullName() != null && cv.getSummary() != null && !cv.getWorkExperiences().isEmpty()) {
+        if (cv.getFullName() != null && cv.getSummary() != null && !cv.getEducations().isEmpty()) {
             cv.setStatus(CvStatus.COMPLETE);
         }
     }
