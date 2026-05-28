@@ -12,9 +12,15 @@ public class AppProperties {
     private Jwt jwt = new Jwt();
     private Storage storage = new Storage();
     private GoogleCloudStorage googleCloudStorage = new GoogleCloudStorage();
+    private Paystack paystack = new Paystack();
     private String adminSecret;
     private String frontendUrl;
     private Resend resend = new Resend();
+
+    @Data
+    public static class Paystack {
+        private String secretKey;
+    }
 
     @Data
     public static class Resend {

@@ -40,6 +40,9 @@ app:
     access-token-expiry-ms: ${JWT_ACCESS_EXPIRY_MS:900000}        # 15 min
     refresh-token-expiry-ms: ${JWT_REFRESH_EXPIRY_MS:604800000}   # 7 days
 
+  paystack:
+    secret-key: ${PAYSTACK_SECRET_KEY:}
+
   storage:
     upload-dir: ${UPLOAD_DIR:./uploads}
 
