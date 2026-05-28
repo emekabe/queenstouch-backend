@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Receipt</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: #212529;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body style="background-color:#f8f9fa; padding: 40px 16px;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" role="presentation"
+               style="max-width:600px; width:100%;">
+
+          <tr>
+            <td align="center" style="padding: 32px 0 24px;">
+              <svg width="360" height="52" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
+                <text x="6" y="58"
+                      font-family="Inter, Arial, sans-serif"
+                      font-weight="900"
+                      font-size="52"
+                      letter-spacing="2"
+                      fill="#0D1B2A">QUEENS<tspan fill="#E86A2D">TOUCH</tspan></text>
+              </svg>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#ffffff; border-radius:12px;
+                       box-shadow:0 4px 16px rgba(0,0,0,0.08); overflow:hidden;">
+
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td style="background: linear-gradient(90deg, #0D1B2A 0%, #1b2f47 60%, #E86A2D 100%);
+                             height: 5px; border-radius: 12px 12px 0 0;"></td>
+                </tr>
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td style="padding: 40px 48px 16px;">
+
+                    <p style="font-size:15px; color:#6c757d; margin-bottom:6px; font-weight:500;">
+                      Hello, <span th:text="${firstName}" style="color:#0D1B2A; font-weight:600;">there</span> 👋
+                    </p>
+                    <h1 style="font-size:26px; font-weight:800; color:#0D1B2A; margin-bottom:16px; line-height:1.3;">
+                      Payment Successful
+                    </h1>
+                    <p style="font-size:15px; color:#495057; line-height:1.7; margin-bottom:28px;">
+                      Thank you for your purchase from <strong style="color:#0D1B2A;">Queenstouch Global</strong>. 
+                      Your payment has been successfully processed and your document is now unlocked.
+                    </p>
+
+                    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                        <td align="center" style="padding: 0 0 28px;">
+                          <div style="display:block; background-color:#f8f9fa;
+                                      border: 1px solid #e9ecef; border-radius:10px;
+                                      padding: 24px; text-align:left;">
+                            <p style="font-size:13px; font-weight:600; color:#6c757d;
+                                      text-transform:uppercase; margin-bottom:16px;">
+                              Receipt Details
+                            </p>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                              <span style="color:#6c757d; font-size: 15px;">Item:</span>
+                              <span th:text="${documentType}" style="font-weight:600; color:#0D1B2A; font-size: 15px;">Resume / CV</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                              <span style="color:#6c757d; font-size: 15px;">Reference:</span>
+                              <span th:text="${reference}" style="font-family: monospace; font-weight:600; color:#0D1B2A; font-size: 14px;">MOCK-ABC</span>
+                            </div>
+                            <hr style="border:none; border-top:1px dashed #ced4da; margin: 16px 0;">
+                            <div style="display: flex; justify-content: space-between;">
+                              <span style="color:#6c757d; font-weight:600; font-size: 16px;">Amount Paid:</span>
+                              <span th:text="'₦' + ${amount}" style="font-weight:800; color:#E86A2D; font-size: 18px;">₦0.00</span>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <p style="font-size:15px; color:#495057; line-height:1.7; margin-bottom:20px;">
+                      You can now download your document directly from your dashboard.
+                    </p>
+
+                  </td>
+                </tr>
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr><td style="padding-bottom:40px;"></td></tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding: 28px 0 8px; text-align:center;">
+              <p style="font-size:13px; color:#adb5bd; margin-bottom:6px;">
+                &copy; 2026 Queenstouch Global. All rights reserved.
+              </p>
+              <p style="font-size:12px; color:#ced4da;">
+                This is an automated message. Please do not reply to this email.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

@@ -57,6 +57,17 @@ public class EmailService {
         sendHtmlEmail(to, EmailType.PASSWORD_RESET, ctx);
     }
 
+    @Async
+    public void sendPaymentReceiptEmail(String to, String firstName, String documentType, String amount, String reference) {
+        Context ctx = new Context();
+        ctx.setVariable("firstName", firstName);
+        ctx.setVariable("documentType", documentType);
+        ctx.setVariable("amount", amount);
+        ctx.setVariable("reference", reference);
+
+        sendHtmlEmail(to, EmailType.PAYMENT_RECEIPT, ctx);
+    }
+
     private void sendHtmlEmail(String to, EmailType emailType, Context ctx) {
         String subject = emailType.getSubject();
         String template = emailType.getTemplate();

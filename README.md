@@ -16,6 +16,7 @@ This backend provides the engine for CV building, cover letter generation, and L
 | **Database** | MongoDB (Spring Data MongoDB) |
 | **AI Integration** | Spring AI (Prompt Engineering + Gemini 2.0 Flash) |
 | **Security** | Spring Security + JWT (Stateless) |
+| **Payment Gateway** | Paystack Integration (Initialize, Verify, Webhook) |
 | **Storage** | Google Cloud Storage (Bucket integration) |
 | **Documents** | iText 7 (PDF) & Apache POI (Word/DOCX) |
 | **API Docs** | Springdoc OpenAPI (Swagger UI) |
@@ -57,6 +58,9 @@ GEMINI_MODEL=gemini-2.0-flash
 GOOGLE_CLOUD_STORAGE_PROJECT_ID=your_gcp_project
 GOOGLE_CLOUD_STORAGE_BUCKET=your_bucket_name
 GOOGLE_CLOUD_STORAGE_CREDENTIALS_BASE64=base64_json_key
+
+# Payment (Paystack)
+PAYSTACK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ### 3. Running the App
@@ -64,6 +68,31 @@ GOOGLE_CLOUD_STORAGE_CREDENTIALS_BASE64=base64_json_key
 ./gradlew bootRun
 ```
 The API will be available at `http://localhost:8080`.
+
+---
+
+## 💳 Paystack Payment Setup Guide
+
+Queenstouch relies on **Paystack** to process document purchases securely. Follow these steps to fully configure it:
+
+### 1. Retrieve your API Keys
+1. Create an account or log into your [Paystack Dashboard](https://dashboard.paystack.com/).
+2. Navigate to **Settings** > **API Keys & Webhooks**.
+3. Copy your **Test Secret Key** (starts with `sk_test_`) for development, or your **Live Secret Key** (`sk_live_`) for production.
+
+### 2. Configure Backend Variables
+Add the key to your `.env` file:
+```bash
+PAYSTACK_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+### 3. Configure Webhooks
+Webhooks allow Paystack to inform the backend automatically when a payment is successful, triggering the document unlock and email receipt process.
+1. In the Paystack Dashboard (**Settings** > **API Keys & Webhooks**), locate the Webhook URL field.
+2. Enter your live backend URL appended with the webhook endpoint:
+   - Example: `https://api.queenstouch.com/api/v1/orders/webhook/payment`
+3. Ensure you do this for both Test and Live environments. 
+*(Note: If you are testing locally, you can use a tunneling tool like ngrok to expose your localhost to Paystack).*
 
 ---
 

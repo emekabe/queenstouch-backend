@@ -11,4 +11,5 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     List<Order> findByUserIdOrderByCreatedAtDesc(String userId);
     boolean existsByRelatedDocumentIdAndStatusIn(String relatedDocumentId,
                                                   List<com.queenstouch.queenstouchbackend.model.enums.OrderStatus> statuses);
+    java.util.Optional<Order> findByPaymentRef(String paymentRef);
 }

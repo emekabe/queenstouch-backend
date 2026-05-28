@@ -14,6 +14,10 @@ public enum EmailType {
     PASSWORD_RESET(
             "Reset your Queenstouch password",
             "email/password-reset"
+    ),
+    PAYMENT_RECEIPT(
+            "Payment Receipt - Queenstouch",
+            "email/payment-receipt"
     );
 
     private final String subject;
