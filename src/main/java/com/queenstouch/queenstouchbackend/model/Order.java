@@ -32,7 +32,7 @@ public class Order {
     private BigDecimal totalAmountNgn;
 
     @Builder.Default
-    private OrderStatus status = OrderStatus.PAID;  // mock: always paid immediately
+    private OrderStatus status = OrderStatus.PENDING;
 
     private String paymentRef;
 

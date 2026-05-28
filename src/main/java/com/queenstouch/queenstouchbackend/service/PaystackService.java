@@ -1,13 +1,13 @@
 package com.queenstouch.queenstouchbackend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.queenstouch.queenstouchbackend.config.AppProperties;
 import com.queenstouch.queenstouchbackend.dto.request.PaystackInitializeRequest;
 import com.queenstouch.queenstouchbackend.dto.response.PaystackInitializeResponse;
 import com.queenstouch.queenstouchbackend.dto.response.PaystackVerifyResponse;
 import com.queenstouch.queenstouchbackend.exception.AppException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,10 +21,8 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class PaystackService {
 
-    @Value("${paystack.secret-key}")
-    private String secretKey;
-
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final AppProperties appProperties;
+    private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
     private static final String PAYSTACK_INITIALIZE_URL = "https://api.paystack.co/transaction/initialize";
@@ -67,7 +65,9 @@ public class PaystackService {
     }
 
     public boolean verifyWebhookSignature(String payload, String signature) {
-        if (signature == null || payload == null || secretKey == null) {
+        String secretKey = appProperties.getPaystack().getSecretKey();
+        if (signature == null || payload == null || secretKey == null || secretKey.isBlank()) {
+            log.warn("Webhook signature check skipped — missing payload, signature, or secret key");
             return false;
         }
         try {
@@ -75,7 +75,7 @@ public class PaystackService {
             SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
             mac.init(secretKeySpec);
             byte[] hmacData = mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
-            
+
             StringBuilder hexString = new StringBuilder();
             for (byte b : hmacData) {
                 String hex = Integer.toHexString(0xff & b);
@@ -92,7 +92,8 @@ public class PaystackService {
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(secretKey);
+        headers.setBearerAuth(appProperties.getPaystack().getSecretKey());
         return headers;
     }
 }
+

@@ -1,6 +1,7 @@
 package com.queenstouch.queenstouchbackend.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,10 +28,17 @@ public class PaystackWebhookPayload {
         private String status;
         private String reference;
         private Long amount;
-        private String gateway_response;
-        private String paid_at;
+
+        @JsonProperty("gateway_response")
+        private String gatewayResponse;
+
+        @JsonProperty("paid_at")
+        private String paidAt;
+
         private String channel;
         private String currency;
-        private String ip_address;
+
+        @JsonProperty("ip_address")
+        private String ipAddress;
     }
 }
