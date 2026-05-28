@@ -1,5 +1,6 @@
 package com.queenstouch.queenstouchbackend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.queenstouch.queenstouchbackend.dto.request.CreateOrderRequest;
 import com.queenstouch.queenstouchbackend.dto.request.PaystackWebhookPayload;
 import com.queenstouch.queenstouchbackend.dto.response.ApiResponse;
@@ -10,6 +11,7 @@ import com.queenstouch.queenstouchbackend.service.PaystackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +34,7 @@ public class OrderController {
 
     private final OrderService orderService;
     private final PaystackService paystackService;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/pricing")
     @Operation(summary = "Get the full pricing catalogue (public)")
@@ -41,8 +46,18 @@ public class OrderController {
     @Operation(summary = "Paystack payment webhook")
     public ResponseEntity<ApiResponse<Void>> paymentWebhook(
             @RequestHeader("x-paystack-signature") String signature,
-            @RequestBody String rawPayload) {
-        
+            HttpServletRequest request) {
+
+        // Read the raw byte stream so the HMAC is computed over the exact bytes
+        // Paystack signed — Spring's @RequestBody String may alter encoding/whitespace.
+        String rawPayload;
+        try {
+            rawPayload = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error("Failed to read webhook request body", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
         boolean isValid = paystackService.verifyWebhookSignature(rawPayload, signature);
         if (!isValid) {
             log.warn("Invalid Paystack webhook signature");
@@ -50,9 +65,8 @@ public class OrderController {
         }
 
         try {
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            PaystackWebhookPayload payload = mapper.readValue(rawPayload, PaystackWebhookPayload.class);
-            
+            PaystackWebhookPayload payload = objectMapper.readValue(rawPayload, PaystackWebhookPayload.class);
+
             if ("charge.success".equals(payload.getEvent()) && payload.getData() != null) {
                 orderService.processSuccessfulPayment(payload.getData().getReference());
             }
@@ -101,3 +115,4 @@ public class OrderController {
         return ResponseEntity.ok(ApiResponse.success(orderService.getById(id)));
     }
 }
+

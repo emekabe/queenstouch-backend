@@ -1,7 +1,6 @@
 package com.queenstouch.queenstouchbackend.service;
 
 import com.queenstouch.queenstouchbackend.config.AppProperties;
-import com.queenstouch.queenstouchbackend.dto.response.ApiResponse;
 import com.queenstouch.queenstouchbackend.dto.response.CreateOrderResponse;
 import com.queenstouch.queenstouchbackend.dto.request.PaystackInitializeRequest;
 import com.queenstouch.queenstouchbackend.dto.response.PaystackInitializeResponse;
@@ -74,7 +73,7 @@ public class OrderService {
                 .email(user.getEmail())
                 .amount(amountInKobo)
                 .reference(reference)
-                .callback_url(callbackUrl)
+                .callbackUrl(callbackUrl)
                 .build();
 
         PaystackInitializeResponse paystackRes = paystackService.initializePayment(paystackReq);

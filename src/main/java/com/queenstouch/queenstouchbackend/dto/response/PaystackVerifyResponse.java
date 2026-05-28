@@ -1,5 +1,6 @@
 package com.queenstouch.queenstouchbackend.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,11 +27,20 @@ public class PaystackVerifyResponse {
         private String status;
         private String reference;
         private Long amount;
-        private String gateway_response;
-        private String paid_at;
-        private String created_at;
+
+        @JsonProperty("gateway_response")
+        private String gatewayResponse;
+
+        @JsonProperty("paid_at")
+        private String paidAt;
+
+        @JsonProperty("created_at")
+        private String createdAt;
+
         private String channel;
         private String currency;
-        private String ip_address;
+
+        @JsonProperty("ip_address")
+        private String ipAddress;
     }
 }
